@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>ZipParty - play with your mods together</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div id="toasts" aria-live="polite"></div>
+
+  <!-- ===================== LANDING ===================== -->
+  <main id="landing" class="screen">
+    <div class="hero">
+      <h1 class="logo">Zip<span>Party</span></h1>
+      <p>Drop in a <code>.zip</code> of images, sounds and data. Everyone in the room gets it instantly, and plays with it together.</p>
+    </div>
+
+    <div class="name-row">
+      <label for="name">Your name</label>
+      <input id="name" type="text" maxlength="20" placeholder="e.g. Alex" autocomplete="nickname">
+    </div>
+
+    <div class="cards">
+      <section class="card">
+        <h2>Create a room</h2>
+        <p class="muted">You become the host and can import a <code>.zip</code>.</p>
+        <button id="btn-create" class="primary" type="button">Create room</button>
+      </section>
+
+      <section class="card">
+        <h2>Join a room</h2>
+        <p class="muted">Enter the code your friend shared.</p>
+        <div class="join-row">
+          <input id="code-input" type="text" maxlength="8" placeholder="ABCD" autocomplete="off" autocapitalize="characters" spellcheck="false">
+          <button id="btn-join" class="primary" type="button">Join</button>
+        </div>
+      </section>
+    </div>
+
+    <p class="footnote">Loads web-friendly files from zips: png, jpg, gif, webp, svg, bmp, mp3, ogg, wav, m4a, flac, json, txt.</p>
+  </main>
+
+  <!-- ======================= ROOM ======================= -->
+  <div id="room" class="screen hidden">
+    <header class="topbar">
+      <div class="logo small">Zip<span>Party</span></div>
+      <button id="room-code-btn" class="code-pill" type="button" title="Copy invite link">
+        <span class="muted">Room</span> <strong id="room-code">----</strong> <small>copy link</small>
+      </button>
+      <div id="players" class="players"></div>
+      <button id="btn-leave" class="ghost" type="button">Leave</button>
+    </header>
+
+    <div class="layout">
+      <section class="stage">
+        <div id="board" class="board">
+          <div id="board-hint" class="board-hint"></div>
+        </div>
+        <div class="stage-bar">
+          <span id="status" class="muted"></span>
+          <span class="spacer"></span>
+          <label class="volume">Volume
+            <input id="volume" type="range" min="0" max="1" step="0.05" value="0.8">
+          </label>
+          <button id="btn-stop-audio" class="ghost small" type="button">Stop sounds</button>
+        </div>
+        <p class="muted tip">Drag images to move them. Scroll or double-click an image to resize it. Click empty space to ping everyone.</p>
+      </section>
+
+      <aside class="side">
+        <section id="host-panel" class="panel hidden">
+          <h3>Host: import a zip</h3>
+          <label id="dropzone" class="dropzone" for="zip-input">
+            <input id="zip-input" type="file" accept=".zip,application/zip,application/x-zip-compressed" hidden>
+            <strong>Drop a .zip here</strong>
+            <span class="muted">or click to browse</span>
+          </label>
+          <div id="progress" class="progress hidden">
+            <div class="bar"><div id="progress-bar"></div></div>
+            <span id="progress-text" class="muted"></span>
+          </div>
+          <button id="btn-clear" class="ghost small" type="button">Clear everything</button>
+        </section>
+
+        <section class="panel">
+          <h3>Images <span id="count-images" class="count">0</span></h3>
+          <div id="tray-images" class="thumbs"></div>
+          <p class="muted small-note">Click an image to add another copy to the board.</p>
+        </section>
+
+        <section class="panel">
+          <h3>Sounds <span id="count-sounds" class="count">0</span></h3>
+          <div id="tray-sounds" class="list"></div>
+        </section>
+
+        <section class="panel">
+          <h3>Data files <span id="count-data" class="count">0</span></h3>
+          <div id="tray-data" class="list"></div>
+          <div id="viewer-wrap" class="viewer-wrap hidden">
+            <div id="viewer-title" class="viewer-title"></div>
+            <pre id="viewer" class="viewer"></pre>
+          </div>
+        </section>
+
+        <section class="panel chat">
+          <h3>Chat</h3>
+          <div id="chat-log" class="chat-log"></div>
+          <form id="chat-form" class="chat-form" autocomplete="off">
+            <input id="chat-input" type="text" maxlength="200" placeholder="Say something...">
+            <button class="primary small" type="submit">Send</button>
+          </form>
+        </section>
+      </aside>
+    </div>
+  </div>
+
+  <!-- JSZip from a CDN, with a second CDN as fallback -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script>window.JSZip || document.write('<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"><\/script>');</script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/client.js"></script>
+</body>
+</html>
